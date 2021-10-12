@@ -1,0 +1,44 @@
+{
+  "rules": [
+    {
+      "rulePriority": 20,
+      "description": "Store only 300 images",
+      "selection": {
+        "tagStatus": "any",
+        "countType": "imageCountMoreThan",
+        "countNumber": 300
+      },
+      "action": {
+        "type": "expire"
+      }
+    },
+    {
+      "rulePriority": 2,
+      "description": "Store only 5 untagged images",
+      "selection": {
+        "tagStatus": "untagged",
+        "countType": "imageCountMoreThan",
+        "countNumber": 5
+      },
+      "action": {
+        "type": "expire"
+      }
+    },
+    {
+      "rulePriority": 1,
+      "description": "Store Pull request images for 15 days",
+      "selection": {
+        "tagStatus": "tagged",
+        "tagPrefixList": [
+          "pr-",
+          "PR-"
+        ],
+        "countType": "imageCountMoreThan",
+        "countNumber": 5
+      },
+      "action": {
+        "type": "expire"
+      }
+    }
+  ]
+}

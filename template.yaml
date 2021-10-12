@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  ops-tools
+
+  SAM Template for ops-tools
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+
+Resources:
+  AnalyticsIdentifyLogsProcessorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: analytics-identify-logs-processor
+      Description: Derives Metrics from the logs of the analytics-identify service
+      CodeUri: functions/logs_processor/
+      Handler: app.lambda_handler
+      Runtime: python3.9
+      Events:
+        AnalyticsIdentifyLogs:
+          Type: CloudWatchLogs
+          Properties:
+            LogGroupName: /apps/production-services/analytics-identify
+            FilterPattern: '[name = Median, stalelness,staleness_value,delimiter,funnel,sz,funnel_size,...]'
+
+  ECRLifecycleManagerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Manages the lifecycle of ECR images
+      FunctionName: ecr-lifecycle-manager
+      CodeUri: functions/ecr_policy_manager/
+      Handler: app.newRepoEventHandler
+      Runtime: nodejs14.x
+
+  ECRLifecycleManagerSetAllFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: Manages the lifecycle of ECR images
+      FunctionName: ecr-lifecycle-manager
+      CodeUri: functions/ecr_policy_manager/
+      Handler: app.setAllHandler
+      Runtime: nodejs14.x
+
+
+Outputs:
+  ProcessorFunction:
+    Description: "Logs Processor Lambda Function ARN"
+    Value: !GetAtt ProcessorFunction.Arn
+  ProcessorFunctionIamRole:
+    Description: "IAM Role created for Logs Processor function"
+    Value: !GetAtt ProcessorFunctionRole.Arn

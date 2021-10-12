@@ -1,0 +1,26 @@
+{
+  "name": "ecr_lifecycle_manager",
+  "version": "1.0.0",
+  "description": "Functions to set ECR Lifecycle Policies",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/morty-tech/ops-tools.git"
+  },
+  "keywords": [
+    "aws"
+  ],
+  "author": "Wayne Folkes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/morty-tech/ops-tools/issues"
+  },
+  "homepage": "https://github.com/morty-tech/ops-tools#readme",
+  "dependencies": {
+    "@aws-sdk/client-ecr": "^3.36.0",
+    "lambda-log": "^3.0.2"
+  }
+}
