@@ -34,6 +34,15 @@ Resources:
       CodeUri: functions/ecr_policy_manager/
       Handler: app.newRepoEventHandler
       Runtime: nodejs14.x
+      Policies:
+        - PolicyName: ECRPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecr:*
+                Resource: "*"
       Events:
         CreateRepositoryEvent:
           Type: EventBridgeRule
@@ -57,6 +66,15 @@ Resources:
       CodeUri: functions/ecr_policy_manager/
       Handler: app.setAllHandler
       Runtime: nodejs14.x
+      Policies:
+        - PolicyName: ECRPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecr:*
+                Resource: "*"
 
   ResourceGroup:
     Type: "AWS::ResourceGroups::Group"
@@ -70,9 +88,9 @@ Resources:
             - "AWS::AllSupported"
 
 Outputs:
-  ProcessorFunction:
-    Description: "Logs Processor Lambda Function ARN"
-    Value: !GetAtt ProcessorFunction.Arn
-  ProcessorFunctionIamRole:
-    Description: "IAM Role created for Logs Processor function"
-    Value: !GetAtt ProcessorFunctionRole.Arn
+  AnalyticsIdentifyLogsProcessorFunction:
+    Description: "Analytics Identify Logs Processor Function ARN"
+    Value: !GetAtt AnalyticsIdentifyLogsProcessorFunction.Arn
+  AnalyticsIdentifyLogsProcessorFunctionIamRole:
+    Description: "IAM Role created for Analytics Identify Logs Processor Function"
+    Value: !GetAtt AnalyticsIdentifyLogsProcessorFunctionRole.Arn
