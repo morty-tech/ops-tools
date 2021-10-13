@@ -35,14 +35,12 @@ Resources:
       Handler: app.newRepoEventHandler
       Runtime: nodejs14.x
       Policies:
-        - PolicyName: ECRPolicy
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - ecr:*
-                Resource: "*"
+        - Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Action:
+                - ecr:*
+              Resource: "*"
       Events:
         CreateRepositoryEvent:
           Type: EventBridgeRule
@@ -67,14 +65,12 @@ Resources:
       Handler: app.setAllHandler
       Runtime: nodejs14.x
       Policies:
-        - PolicyName: ECRPolicy
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - ecr:*
-                Resource: "*"
+        - Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Action:
+                - ecr:*
+              Resource: "*"
 
   ResourceGroup:
     Type: "AWS::ResourceGroups::Group"
