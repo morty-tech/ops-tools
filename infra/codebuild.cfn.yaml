@@ -81,6 +81,7 @@ Resources:
                   - "sns:*"
                   - "chatbot:*"
                   - "events:*Rule*"
+                  - "events:*Target*"
                   - "resource-groups:*"
                   - "codebuild:UpdateWebhook"
                   - "codebuild:CreateWebhook"
