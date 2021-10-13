@@ -72,7 +72,8 @@ module.exports.newRepoEventHandler = async (event, context) => {
   const repoName = event.responseElements?.repository?.repositoryName;
   if (repoName !== undefined) {
     log.info(`Setting policies for ${repoName}`)
-    await setPolicies(repoName);
+    const lifecyclePolicy = await readPolicy("policies/lifecycle.json");
+    await setPolicies(repoName, lifecyclePolicy);
     log.info(`Policies set for ${repoName}`)
   } else {
     log.info("No repository name found in event")
