@@ -14,7 +14,8 @@ Resources:
   AnalyticsIdentifyLogsProcessorFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Architectures: arm64
+      Architectures:
+        - arm64
       FunctionName: !Sub ${AWS::StackName}-analytics-identify-logs-processor
       Description: Derives Metrics from the logs of the analytics-identify service
       CodeUri: functions/logs_processor/
@@ -30,7 +31,8 @@ Resources:
   ECRLifecycleManagerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Architectures: arm64
+      Architectures:
+        - arm64
       Description: Manages the Config of an ECR Repository on a CreateRepository event
       FunctionName: !Sub ${AWS::StackName}-ecr-lifecycle-manager
       CodeUri: functions/ecr_policy_manager/
@@ -61,7 +63,8 @@ Resources:
   ECRLifecycleManagerSetAllFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Architectures: arm64
+      Architectures:
+        - arm64
       Description: Manages the lifecycle of ECR images
       FunctionName: !Sub ${AWS::StackName}-ecr-lifecycle-manager-set-all
       CodeUri: functions/ecr_policy_manager/
