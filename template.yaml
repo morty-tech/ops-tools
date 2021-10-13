@@ -29,11 +29,25 @@ Resources:
   ECRLifecycleManagerFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Description: Manages the lifecycle of ECR images
+      Description: Manages the Config of an ECR Repository on a CreateRepository event
       FunctionName: ecr-lifecycle-manager
       CodeUri: functions/ecr_policy_manager/
       Handler: app.newRepoEventHandler
       Runtime: nodejs14.x
+      Events:
+        CreateRepositoryEvent:
+          Type: EventBridgeRule
+          Properties:
+            Pattern:
+              source:
+                - aws.ecr
+              detail-type:
+                - AWS API Call via CloudTrail
+              detail:
+                eventSource:
+                  - ecr.amazonaws.com
+                eventName:
+                  - CreateRepository
 
   ECRLifecycleManagerSetAllFunction:
     Type: AWS::Serverless::Function

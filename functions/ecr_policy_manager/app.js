@@ -41,7 +41,7 @@ const enableScanning = async (repoName) => {
 }
 
 const setPolicies = async (repoName, lifecyclePolicy) => {
-  // await setLifecyclePolicy(repoName, lifecyclePolicy);
+  await setLifecyclePolicy(repoName, lifecyclePolicy);
   await enableScanning(repoName);
   return;
 };

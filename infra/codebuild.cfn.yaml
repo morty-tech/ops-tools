@@ -1,0 +1,145 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  RepoLocation:
+    Description: URL of Github Repo
+    Type: String
+    Default: https://github.com/morty-tech/ops-tools.git
+  BuildSpec:
+    Description: BuildSpec file name
+    Type: String
+    Default: infra/buildspec.yaml
+
+Resources:
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: NO_ARTIFACTS
+      BadgeEnabled: True
+      Description: "Ops Tools Build"
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:5.0
+        ImagePullCredentialsType: CODEBUILD
+        PrivilegedMode: true
+        Type: LINUX_CONTAINER
+        EnvironmentVariables:
+          - Name: AWS_ACCOUNT_ID
+            Value: !Sub ${AWS::AccountId}
+      LogsConfig:
+        CloudWatchLogs:
+          GroupName: !Ref LogGroup
+          Status: ENABLED
+      Name: !Sub ${AWS::StackName}
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Source:
+        Location: !Ref RepoLocation
+        ReportBuildStatus: True
+        SourceIdentifier: Github
+        Type: GITHUB
+        BuildSpec: !Ref BuildSpec
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /builds/${AWS::StackName}
+      RetentionInDays: 5
+
+  CodeBuildRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Statement:
+          - Action: ['sts:AssumeRole']
+            Effect: Allow
+            Principal:
+              Service: [codebuild.amazonaws.com]
+          Version: '2012-10-17'
+        Path: /
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/AWSLambda_FullAccess
+          - arn:aws:iam::aws:policy/IAMFullAccess
+          - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+          - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+          - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        Policies:
+          - PolicyName: CodeBuildAccess
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Action:
+                  - "logs:*"
+                  - "ecr:*"
+                  - "sns:*"
+                  - "chatbot:*"
+                  - "resource-groups:*"
+                  - "codebuild:UpdateWebhook"
+                  - "codebuild:CreateWebhook"
+                  - "codebuild:CreateReportGroup"
+                  - "codebuild:CreateReport"
+                  - "codebuild:UpdateReport"
+                  - "codebuild:BatchPutTestCases"
+                  Effect: Allow
+                  Resource: '*'
+
+  NotificationRule:
+    Type: AWS::CodeStarNotifications::NotificationRule
+    Properties:
+      DetailType: FULL
+      EventTypeIds:
+        - codebuild-project-build-state-in-progress
+        - codebuild-project-build-state-failed
+        - codebuild-project-build-state-succeeded
+        - codebuild-project-build-state-stopped
+      Name: !Sub ${AWS::StackName}-notification-rule
+      Resource: !GetAtt CodeBuildProject.Arn
+      Status: ENABLED
+      Targets:
+        - TargetAddress: !Ref DeploymentTopic
+          TargetType: SNS
+
+  DeploymentTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: !Sub ${AWS::StackName}-deployment-topic
+      Subscription:
+        -   Endpoint: https://global.sns-api.chatbot.amazonaws.com
+            Protocol: HTTPS
+      TopicName: !Sub ${AWS::StackName}-deployment-topic
+
+  DeploymentTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Sid: AllowCodeStarCloudwatchNotifications
+          Action:
+          - sns:Publish
+          Effect: Allow
+          Resource:
+           - !Ref DeploymentTopic
+          Principal:
+            Service:
+            - codestar-notifications.amazonaws.com
+            - cloudwatch.amazonaws.com
+        - Sid: DefaultAccess
+          Action:
+          - sns:AddPermission
+          - sns:DeleteTopic
+          - sns:GetTopicAttributes
+          - sns:ListSubscriptionsByTopic
+          - sns:Publish
+          - sns:RemovePermission
+          - sns:SetTopicAttributes
+          - sns:Subscribe
+          Effect: Allow
+          Resource: !Ref DeploymentTopic
+          Condition:
+            StringEquals:
+              aws:SourceAccount: !Sub ${AWS::AccountId}
+          Principal:
+            AWS:
+            - !Sub ${AWS::AccountId}
+      Topics:
+        - !Ref DeploymentTopic
