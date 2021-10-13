@@ -51,6 +51,8 @@ Resources:
         CreateRepositoryEvent:
           Type: EventBridgeRule
           Properties:
+            Target:
+              Id: CreateRepositoryEvent
             Pattern:
               source:
                 - aws.ecr
