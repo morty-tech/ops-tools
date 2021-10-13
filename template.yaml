@@ -14,7 +14,7 @@ Resources:
   AnalyticsIdentifyLogsProcessorFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: analytics-identify-logs-processor
+      FunctionName: !Sub ${AWS::StackName}-analytics-identify-logs-processor
       Description: Derives Metrics from the logs of the analytics-identify service
       CodeUri: functions/logs_processor/
       Handler: app.lambda_handler
@@ -30,7 +30,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Description: Manages the Config of an ECR Repository on a CreateRepository event
-      FunctionName: ecr-lifecycle-manager
+      FunctionName: !Sub ${AWS::StackName}-ecr-lifecycle-manager
       CodeUri: functions/ecr_policy_manager/
       Handler: app.newRepoEventHandler
       Runtime: nodejs14.x
@@ -53,11 +53,21 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Description: Manages the lifecycle of ECR images
-      FunctionName: ecr-lifecycle-manager
+      FunctionName: !Sub ${AWS::StackName}-ecr-lifecycle-manager-set-all
       CodeUri: functions/ecr_policy_manager/
       Handler: app.setAllHandler
       Runtime: nodejs14.x
 
+  ResourceGroup:
+    Type: "AWS::ResourceGroups::Group"
+    Properties:
+      Name: !Sub ${AWS::StackName}-resource-group
+      Description: !Sub "Resource Group for ${AWS::StackName}"
+      ResourceQuery:
+        Type: "CLOUDFORMATION_STACK_1_0"
+        Query:
+          ResourceTypeFilters:
+            - "AWS::AllSupported"
 
 Outputs:
   ProcessorFunction:

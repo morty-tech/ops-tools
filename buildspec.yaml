@@ -10,4 +10,5 @@ phases:
   post_build:
     commands:
       - echo Entered the post_build phase...
+      - make deploy
       - echo Build completed on `date`
