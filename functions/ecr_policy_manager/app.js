@@ -33,7 +33,7 @@ const enableScanning = async (repoName) => {
   const command = new PutImageScanningConfigurationCommand({
     repositoryName: repoName,
     imageScanningConfiguration: {
-      scanOnPush: false,
+      scanOnPush: true,
     }
   })
   const response = await ecrClient.send(command);
