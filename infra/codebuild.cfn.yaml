@@ -7,7 +7,7 @@ Parameters:
   BuildSpec:
     Description: BuildSpec file name
     Type: String
-    Default: infra/buildspec.yaml
+    Default: buildspec.yaml
 
 Resources:
   CodeBuildProject:
