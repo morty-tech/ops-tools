@@ -45,7 +45,7 @@ Resources:
         ReportBuildStatus: True
         SourceIdentifier: Github
         Type: GITHUB
-        BuildSpec: infra/buildspec.yaml
+        BuildSpec: buildspec.yaml
 
   LogGroup:
     Type: AWS::Logs::LogGroup
@@ -80,6 +80,7 @@ Resources:
                   - "ecr:*"
                   - "sns:*"
                   - "chatbot:*"
+                  - "events:*Rule*"
                   - "resource-groups:*"
                   - "codebuild:UpdateWebhook"
                   - "codebuild:CreateWebhook"
