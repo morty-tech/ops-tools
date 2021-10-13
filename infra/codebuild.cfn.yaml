@@ -13,6 +13,7 @@ Resources:
   CodeBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
+      ConcurrentBuildLimit: 1
       Artifacts:
         Type: NO_ARTIFACTS
       BadgeEnabled: True
@@ -32,6 +33,13 @@ Resources:
           Status: ENABLED
       Name: !Sub ${AWS::StackName}
       ServiceRole: !GetAtt CodeBuildRole.Arn
+      Triggers:
+        Webhook: true
+        FilterGroups:
+          - - Type: EVENT
+              Pattern: PUSH
+            - Type: HEAD_REF
+              Pattern: ^refs/heads/.*
       Source:
         Location: !Ref RepoLocation
         ReportBuildStatus: True
