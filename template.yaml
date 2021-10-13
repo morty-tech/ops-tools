@@ -19,6 +19,7 @@ Resources:
       CodeUri: functions/logs_processor/
       Handler: app.lambda_handler
       Runtime: python3.9
+      Architecture: arm64
       Events:
         AnalyticsIdentifyLogs:
           Type: CloudWatchLogs
@@ -34,6 +35,7 @@ Resources:
       CodeUri: functions/ecr_policy_manager/
       Handler: app.newRepoEventHandler
       Runtime: nodejs14.x
+      Architecture: arm64
       Policies:
         - Version: 2012-10-17
           Statement:
@@ -64,6 +66,7 @@ Resources:
       CodeUri: functions/ecr_policy_manager/
       Handler: app.setAllHandler
       Runtime: nodejs14.x
+      Architecture: arm64
       Policies:
         - Version: 2012-10-17
           Statement:
