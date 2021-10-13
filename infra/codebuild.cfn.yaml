@@ -20,10 +20,10 @@ Resources:
       Description: "Ops Tools Build"
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/amazonlinux2-aarch64-standard:2.0
+        Image: aws/codebuild/standard:5.0
         ImagePullCredentialsType: CODEBUILD
         PrivilegedMode: true
-        Type: ARM_CONTAINER
+        Type: LINUX_CONTAINER
         EnvironmentVariables:
           - Name: AWS_ACCOUNT_ID
             Value: !Sub ${AWS::AccountId}
